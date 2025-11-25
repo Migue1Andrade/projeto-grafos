@@ -1,0 +1,13 @@
+{
+  "maior_grau": {
+    "bairro": "Boa Vista",
+    "grau": 11
+  },
+  "maior_densidade_ego": {
+    "bairro": "Alto Santa Terezinha",
+    "grau": 1,
+    "ordem_ego": 2,
+    "tamanho_ego": 1,
+    "densidade_ego": 1.0
+  }
+}

@@ -1,0 +1,108 @@
+bairro,grau,ordem_ego,tamanho_ego,densidade_ego
+Aflitos,4,5,8,0.8
+Afogados,8,9,12,0.3333333333333333
+Alto José Bonifácio,6,7,11,0.5238095238095238
+Alto José do Pinho,6,7,10,0.47619047619047616
+Alto Santa Teresinha,4,5,7,0.7
+Alto Santa Terezinha,1,2,1,1.0
+Alto do Mandu,5,6,9,0.6
+Apipucos,6,7,8,0.38095238095238093
+Areias,6,7,9,0.42857142857142855
+Arruda,8,9,14,0.3888888888888889
+Barro,5,6,7,0.4666666666666667
+Beberibe,4,5,6,0.6
+Boa Viagem,3,4,4,0.6666666666666666
+Boa Vista,11,12,21,0.3181818181818182
+Bomba do Hemetério,5,6,9,0.6
+Bongi,4,5,7,0.7
+Brasilia Teimosa,1,2,1,1.0
+Brejo da Guabiraba,5,6,10,0.6666666666666666
+Brejo de Beberibe,7,8,14,0.5
+Cabanga,4,5,5,0.5
+Cajueiro,2,3,2,0.6666666666666666
+Campina do Barreto,5,6,8,0.5333333333333333
+Campo Grande,6,7,9,0.42857142857142855
+Casa Amarela,11,12,19,0.2878787878787879
+Casa Forte,4,5,6,0.6
+Caxanga,1,2,1,1.0
+Caxangá,4,5,5,0.5
+Caçote,1,2,1,1.0
+Cidade Universitária,4,5,7,0.7
+Coelhos,4,5,6,0.6
+Cohab,3,4,5,0.8333333333333334
+Coqueiral,3,4,5,0.8333333333333334
+Cordeiro,9,10,16,0.35555555555555557
+Curado,9,10,16,0.35555555555555557
+Córrego de Jenipapo,1,2,1,1.0
+Córrego do Jenipapo,4,5,7,0.7
+Derby,4,5,7,0.7
+Dois Irmãos,3,4,4,0.6666666666666666
+Dois Unidos,5,6,7,0.4666666666666667
+Dois irmãos,1,2,1,1.0
+Encruzilhada,8,9,15,0.4166666666666667
+Engenho do Meio,5,6,11,0.7333333333333333
+Espinheiro,5,6,10,0.6666666666666666
+Estância,3,4,5,0.8333333333333334
+Fundão,2,3,3,1.0
+Graças,9,10,17,0.37777777777777777
+Guabiraba,5,6,7,0.4666666666666667
+Hipodromo,1,2,1,1.0
+Hipódromo,2,3,3,1.0
+Ibura,4,5,6,0.6
+Ilha Joana Bezerra,3,4,4,0.6666666666666666
+Ilha do Leite,3,4,5,0.8333333333333334
+Ilha do Retiro,4,5,6,0.6
+Imbiribeira,4,5,5,0.5
+Ipsep,3,4,3,0.5
+Iputinga,7,8,11,0.39285714285714285
+Jaqueira,4,5,7,0.7
+Jardim São Paulo,7,8,10,0.35714285714285715
+Jiquiá,4,5,5,0.5
+Jiquiá Rua Bom Jardim,1,2,1,1.0
+Jiquiá Rua José Guimarães,1,2,1,1.0
+Jordão,3,4,4,0.6666666666666666
+Linha do TIro,1,2,1,1.0
+Linha do Tiro,5,6,8,0.5333333333333333
+Macaxeira,4,5,6,0.6
+Madalena,6,7,11,0.5238095238095238
+Mangabeira,5,6,10,0.6666666666666666
+Mangueira,4,5,6,0.6
+Monteiro,5,6,7,0.4666666666666667
+Morro da Conceição,3,4,5,0.8333333333333334
+Morro da conceição,1,2,1,1.0
+Mustardinha,4,5,8,0.8
+Nova Descoberta,6,7,11,0.5238095238095238
+Paissandu,4,5,6,0.6
+Parnamirim,6,7,12,0.5714285714285714
+Passarinho,4,5,7,0.7
+Pau-Ferro,1,2,1,1.0
+Peixinhos,3,4,5,0.8333333333333334
+Pina,4,5,5,0.5
+Ponto de Parada,4,5,6,0.6
+Porto da Madeira,3,4,4,0.6666666666666666
+Poço Da Panela,1,2,1,1.0
+Poço da Panela,2,3,2,0.6666666666666666
+Prado,6,7,11,0.5238095238095238
+Recife,3,4,5,0.8333333333333334
+Rosarinho,5,6,9,0.6
+San Martin,8,9,13,0.3611111111111111
+Sancho,4,5,8,0.8
+Santana,5,6,9,0.6
+Santo Amaro,6,7,10,0.47619047619047616
+Santo Antônio,5,6,10,0.6666666666666666
+Soledade,2,3,3,1.0
+São José,5,6,8,0.5333333333333333
+Sítio dos Pintos,2,3,3,1.0
+Tamarineira,7,8,13,0.4642857142857143
+Tejipio,1,2,1,1.0
+Tejipió,4,5,6,0.6
+Torre,6,7,11,0.5238095238095238
+Torres,1,2,1,1.0
+Torreão,4,5,7,0.7
+Torrões,5,6,11,0.7333333333333333
+Totó,3,4,5,0.8333333333333334
+Varzea,1,2,1,1.0
+Vasco da Gama,7,8,14,0.5
+Várzea,3,4,4,0.6666666666666666
+Zumbi,4,5,8,0.8
+Água Fria,8,9,13,0.3611111111111111
