@@ -15,7 +15,7 @@ Boa Vista, Coelhos, Rua Dos Coelhos, "Acesso por rua", 2.0
 Boa Vista, Encruzilhada, Avenida João de Barros, "Acesso Avenida", 4.0
 Boa Vista, Espinheiro, Rua 48, "Acesso por Rua", 2.0
 Boa Vista, Derby, Rua Henrique Dias, "Acesso por Rua", 2.0
-Boa Vista, Graças, Rua Joaquim Nabuco, "Acesso por Rua", 2.0      
+Boa Vista, Graças, Rua Joaquim Nabuco, "Acesso por Rua", 2.0
 Cabanga, Afogados, Avenida Sul Governador Cid Sampaio, "Acesso por Avenida', 4.0
 Cabanga, São José, Avenida Engenheiro José Estelita, "Acesso por Avenida", 4.0
 Cabanga, Ilha Joana Bezerra, Rua Dom Paulo II, "Acesso por rua", 2.0
@@ -41,7 +41,7 @@ Campina do Barreto, Água Fria, Rua Constança, “Acesso por Rua”, 2.0
 Campina do Barreto, Fundão, Avenida Nova do Fundão, “Acesso por Avenida”, 4.0
 Campo Grande, Encruzilhada, Estrada de Belem, “Acesso por Estrada”, 1.5
 Campo Grande, Torreão, Rua da Fronteira, “Acesso por Rua”, 2.0
-Campo Grande, Hipodromo, Rua Francisco Berenguer, “Acesso por Rua”, 2.0
+Campo Grande, Hipódromo, Rua Francisco Berenguer, “Acesso por Rua”, 2.0
 Campo Grande, Peixinhos, Rua Farias Neves, “Acesso por Ponte”, 1.0
 Encruzilhada, Aflitos, Avenida Conselheiro Portela, “Acesso por Avenida”, 4.0
 Encruzilhada, Hipódromo, Rua Frederico, “Acesso por Rua”, 2.0
@@ -59,7 +59,7 @@ Torreão, Espinheiro, Avenida Norte Miguel Arraes de Alencar, “Acesso por aven
 Água Fria, Bomba do Hemetério, Rua Córrego João Francisco, “Acesso por rua”, 2.0
 Água Fria, Fundão, Rua Major Davino, “Acesso por rua”, 2.0
 Água Fria, Linha do Tiro, Rua Ladeira de Pedra, “Acesso por rua”, 2.0
-Água Fria, Alto Santa Terezinha, Rua Grupiara, “Acesso por rua”, 2.0
+Água Fria, Alto Santa Teresinha, Rua Grupiara, “Acesso por rua”, 2.0
 Água Fria, Porto da Madeira, Rua Conselheiro Barros Barreto, “Acesso por rua”, 2.0
 Alto Santa Teresinha, Bomba do Hemetério, Rua Aurea, “Acesso por rua”, 2.0
 Alto Santa Teresinha, Alto José do Pinho, Rua Padre Oliveira, “Acesso por rua”, 2.0
@@ -81,7 +81,7 @@ Alto do Mandu, Apipucos, Rua Massaranduba, “Acesso por rua”, 2.0
 Alto do Mandu, Casa Amarela, Rua Coruripe, “Acesso por rua”, 2.0
 Alto do Mandu, Macaxeira, Rua Nova Descoberta, “Acesso por rua”, 2.0
 Alto do Mandu, Vasco da Gama, Rua S D 5178, “Acesso por rua”, 2.0
-Apipucos, Dois irmãos, Avenida da Recuperação, “Acesso por Avenida”, 4.0
+Apipucos, Dois Irmãos, Avenida da Recuperação, “Acesso por Avenida”, 4.0
 Apipucos, Macaxeira, Rua Erundina N. de Araujo, “Acesso por rua”, 2.0
 Apipucos, Monteiro, Rua de Apipucos, “Acesso por rua”, 2.0
 Apipucos, Caxangá, Rodovia, Governador Mário Covas, “Acesso por rodovia”, 5.0
@@ -158,8 +158,8 @@ Ilha do Retiro, Madalena, Rua Comendador Bento Aguiar, “Acesso por Rua”, 2.0
 Ilha do Retiro, Paissandu, Ponte Prefeito Lima Castro, “Acesso por Ponte”, 1.0
 Ilha do Retiro, Prado, Rua Joao Ivo da Silva, “Acesso por Rua”, 2.0
 Ilha do Retiro, Afogados, Avenida Vila Canal, “Acesso por Avenida”, 4.0
-Iputinga, Varzea, Rua Emiliano Braga, “Acesso por Rua”, 2.0
-Iputinga, Caxanga, Rua Min. João Alberto, “Acesso por Rua”, 2.0
+Iputinga, Várzea, Rua Emiliano Braga, “Acesso por Rua”, 2.0
+Iputinga, Caxangá, Rua Min. João Alberto, “Acesso por Rua”, 2.0
 Iputinga, Cidade Universitária, Rua General Vargas, “Acesso por Rua”, 2.0
 Iputinga, Engenho do Meio, Avenida Mucio Uchoa Cavalcanti, “Acesso por Avenida”, 4.0
 Iputinga, Monteiro, Ponte Engenheiro Jaime Gusmão, “Acesso por Ponte”, 1.0
@@ -192,7 +192,7 @@ Bongi, San Martin, Rua Itapemirim, “Acesso por Rua”, 2.0
 Bongi, Mustardinha, Rua Pocrana, “Acesso por Rua”, 2.0
 Mangueira, Mustardinha, Rua Frutuoso de Barros, “Acesso por Rua”, 2.0
 Mangueira, San Martin, Rua José Bezerra Cavalcante, “Acesso por Rua”, 2.0
-Mangueira, Jiquiá Rua Bom Jardim, “Acesso por Rua”, 2.0
+Mangueira, Jiquiá, Rua Bom Jardim, “Acesso por Rua”, 2.0
 Mustardinha, San Martin, Rua Itaquari, “Acesso por Rua”, 2.0
 San Martin, Jiquiá, Rua Santa Rosa, “Acesso por Rua”, 2.0
 Areias, Caçote,  Avenida Capitão Gregório de Caldas, “Acesso por Avenida”, 4.0
@@ -216,9 +216,9 @@ Curado, Jardim São Paulo, Rua Jundiaí, “Acesso por Rua”, 2.0
 Curado, Tejipió, Estrada do Curado, “Acesso por Estrada”, 1.5
 Curado, Totó, Rua Leão Treze, “Acesso por Rua”, 2.0
 Jardim São Paulo, Estância, Rua Nossa Senhora de Fátima, “Acesso por Rua”, 2.0
-Jardim São Paulo, Tejipio, Avenida Liberdade, “Acesso por Avenida”, 4.0
+Jardim São Paulo, Tejipió, Avenida Liberdade, “Acesso por Avenida”, 4.0
 Jardim São Paulo, San Martin, Viaduto da CEASA, “Acesso por Viaduto”, 3.0
-Jardim São Paulo, Jiquiá Rua José Guimarães, “Acesso por Rua”, 2.0
+Jardim São Paulo, Jiquiá, Rua José Guimarães, “Acesso por Rua”, 2.0
 Sancho, Curado, Avenida Tempo Feliz, “Acesso por Avenida”, 4.0
 Sancho, Totó, Rua Paulino de Farias, “Acesso por Rua”, 2.0
 Sancho, Tejipió, Rua Matoso da Câmara, “Acesso por Rua”, 2.0
