@@ -312,7 +312,7 @@ def gerar_grafo_interativo_html(
             color=color,
             width=width,
             title=f"peso: {peso}",
-            percurso=flag_percurso,  # atributo extra que o JS vai usar
+            percurso=flag_percurso,
         )
 
     net.set_options(CONFIG_GRAFO_INTERATIVO)
