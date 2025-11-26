@@ -9,3 +9,15 @@ __pycache__/
 
 # IDE
 .vscode/
+bairros_unique.csv
+distancias_enderecos.csv
+ego_bairro.csv
+graus.csv
+
+*.html
+*.png
+
+microrregioes.json
+percurso_nova_descoberta_setubal.json
+ranking_bairros.json
+recife_global.json
