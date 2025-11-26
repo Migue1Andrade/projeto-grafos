@@ -302,19 +302,314 @@ def gerar_grafo_interativo_html(
         )
 
     for origem, destino, peso in grafo.edges():
-        if (origem, destino) in arestas_caminho:
-            color = "#E53935"
-            width = 3
-        else:
-            color = "#CFD8DC"
-            width = 1
+        flag_percurso = 1 if (origem, destino) in arestas_caminho else 0
+        color = "#CFD8DC"
+        width = 1
 
-        net.add_edge(origem, destino, color=color, width=width, title=f"peso: {peso}")
+        net.add_edge(
+            origem,
+            destino,
+            color=color,
+            width=width,
+            title=f"peso: {peso}",
+            percurso=flag_percurso,  # atributo extra que o JS vai usar
+        )
 
     net.set_options(CONFIG_GRAFO_INTERATIVO)
 
     os.makedirs(os.path.dirname(html_path), exist_ok=True)
     net.write_html(html_path)
+
+    with open(html_path, encoding="utf-8") as f:
+        html = f.read()
+
+        extra_html = '''
+                <div style="
+                    position: fixed;
+                    top: 10px;
+                    left: 10px;
+                    z-index: 9999;
+                    background: #ffffff;
+                    padding: 10px;
+                    border-radius: 8px;
+                    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+                    font-family: Arial, sans-serif;
+                    max-width: 320px;
+                ">
+                <div style="margin-bottom: 6px;">
+                    <label for="busca-bairro" style="font-weight:bold; font-size:13px;">
+                    Buscar bairro:
+                    </label><br>
+                    <input id="busca-bairro"
+                        type="text"
+                        list="lista-bairros"
+                        placeholder="Digite o nome"
+                        style="width: 100%; padding: 4px; font-size: 13px;">
+                </div>
+
+                <button id="btn-buscar-bairro" type="button"
+                        style="width: 100%; margin-bottom: 8px;
+                                padding: 6px 8px; font-size: 13px;
+                                border-radius: 6px; border: none;
+                                background:#455A64; color:white; cursor:pointer;">
+                    Buscar bairro
+                </button>
+
+                <hr style="margin: 6px 0;">
+
+                <div style="margin-bottom: 6px;">
+                    <label for="origem-bairro" style="font-weight:bold; font-size:13px;">
+                    Origem:
+                    </label><br>
+                    <input id="origem-bairro"
+                        type="text"
+                        list="lista-bairros"
+                        placeholder="Ex: Nova Descoberta"
+                        style="width: 100%; padding: 4px; font-size: 13px;">
+                </div>
+
+                <div style="margin-bottom: 8px;">
+                    <label for="destino-bairro" style="font-weight:bold; font-size:13px;">
+                    Destino:
+                    </label><br>
+                    <input id="destino-bairro"
+                        type="text"
+                        list="lista-bairros"
+                        placeholder="Ex: Boa Viagem (Setúbal)"
+                        style="width: 100%; padding: 4px; font-size: 13px;">
+                </div>
+
+                <button id="btn-tracar" type="button"
+                        style="width: 100%; margin-bottom: 6px;
+                                padding: 6px 8px; font-size: 13px;
+                                border-radius: 6px; border: none;
+                                background:#388E3C; color:white; cursor:pointer;">
+                    Traçar caminho
+                </button>
+
+                <button id="btn-percurso-nd-bv" type="button"
+                        style="width: 100%;
+                                padding: 6px 8px; font-size: 13px;
+                                border-radius: 6px; border: none;
+                                background:#1976D2; color:white; cursor:pointer;">
+                    Traçar caminho Nova Descoberta → Boa Viagem (Setúbal)
+                </button>
+
+                <!-- lista compartilhada de bairros (autocomplete) -->
+                <datalist id="lista-bairros"></datalist>
+                </div>
+
+                <script type="text/javascript">
+                // --- PREENCHE A DATALIST COM OS BAIRROS (labels dos nós) ---
+                function popularDatalistBairros() {
+                    var dl = document.getElementById('lista-bairros');
+                    if (!dl) return;
+
+                    dl.innerHTML = "";
+                    var dataNodes = nodes.get();
+
+                    dataNodes.forEach(function(n) {
+                    if (n.label) {
+                        var opt = document.createElement('option');
+                        opt.value = n.label;
+                        dl.appendChild(opt);
+                    }
+                    });
+                }
+
+                // --- BUSCA POR BAIRRO ---
+                function selecionarBairroPorNome(nome) {
+                    if (!nome) return;
+                    var ids = [];
+                    var dataNodes = nodes.get();
+
+                    nome = nome.toLowerCase();
+
+                    dataNodes.forEach(function(n) {
+                    if (n.label && n.label.toLowerCase().includes(nome)) {
+                        ids.push(n.id);
+                    }
+                    });
+
+                    if (ids.length > 0) {
+                    network.selectNodes(ids);
+                    network.focus(ids[0], {
+                        scale: 1.4,
+                        animation: { duration: 800, easingFunction: 'easeInOutQuad' }
+                    });
+                    } else {
+                    alert("Bairro não encontrado: " + nome);
+                    }
+                }
+
+                var inputBusca = document.getElementById('busca-bairro');
+                inputBusca.addEventListener('keyup', function(e) {
+                    if (e.key === 'Enter') {
+                    selecionarBairroPorNome(this.value);
+                    }
+                });
+
+                document.getElementById('btn-buscar-bairro').addEventListener('click', function() {
+                    selecionarBairroPorNome(inputBusca.value);
+                });
+
+                // --- AUXÍLIOS PARA ORIGEM/DESTINO ---
+
+                function encontrarNoPorNome(nome) {
+                    if (!nome) return null;
+                    nome = nome.toLowerCase();
+                    var dataNodes = nodes.get();
+                    for (var i = 0; i < dataNodes.length; i++) {
+                    var n = dataNodes[i];
+                    if (n.label && n.label.toLowerCase() === nome) {
+                        return n.id;
+                    }
+                    }
+                    return null;
+                }
+
+                // Monta lista de adjacência (grafo não-direcionado)
+                function construirAdjacencia() {
+                    var dataEdges = edges.get();
+                    var adj = {};
+                    dataEdges.forEach(function(e) {
+                    if (!adj[e.from]) adj[e.from] = [];
+                    if (!adj[e.to]) adj[e.to] = [];
+                    adj[e.from].push(e.to);
+                    adj[e.to].push(e.from);
+                    });
+                    return adj;
+                }
+
+                // BFS para caminho mais curto em número de arestas
+                function calcularCaminhoMaisCurto(origemId, destinoId, adj) {
+                    var fila = [origemId];
+                    var visitado = {};
+                    var pai = {};
+
+                    visitado[origemId] = true;
+
+                    while (fila.length > 0) {
+                    var u = fila.shift();
+                    if (u === destinoId) break;
+
+                    var vizinhos = adj[u] || [];
+                    for (var i = 0; i < vizinhos.length; i++) {
+                        var v = vizinhos[i];
+                        if (!visitado[v]) {
+                        visitado[v] = true;
+                        pai[v] = u;
+                        fila.push(v);
+                        }
+                    }
+                    }
+
+                    if (!visitado[destinoId]) {
+                    return null;
+                    }
+
+                    var caminho = [];
+                    var atual = destinoId;
+                    while (atual !== undefined) {
+                    caminho.push(atual);
+                    if (atual === origemId) break;
+                    atual = pai[atual];
+                    }
+                    caminho.reverse();
+                    return caminho;
+                }
+
+                var ultimasArestasDestacadas = [];
+
+                function destacarCaminho(caminho) {
+                    var dataEdges = edges.get();
+
+                    // limpa o destaque anterior
+                    if (ultimasArestasDestacadas.length > 0) {
+                    dataEdges.forEach(function(e) {
+                        if (ultimasArestasDestacadas.indexOf(e.id) !== -1) {
+                        e.color = "#CFD8DC";
+                        e.width = 1;
+                        }
+                    });
+                    }
+
+                    var novasArestas = [];
+
+                    // destaca as arestas do novo caminho
+                    for (var i = 0; i < caminho.length - 1; i++) {
+                    var u = caminho[i];
+                    var v = caminho[i + 1];
+
+                    dataEdges.forEach(function(e) {
+                        if ((e.from === u && e.to === v) || (e.from === v && e.to === u)) {
+                        e.color = "#E53935";
+                        e.width = 3;
+                        novasArestas.push(e.id);
+                        }
+                    });
+                    }
+
+                    ultimasArestasDestacadas = novasArestas;
+                    edges.update(dataEdges);
+
+                    network.fit({
+                    nodes: caminho,
+                    animation: { duration: 800, easingFunction: 'easeInOutQuad' }
+                    });
+                }
+
+                function tratarTracarCaminho() {
+                    var origemNome = document.getElementById('origem-bairro').value.trim();
+                    var destinoNome = document.getElementById('destino-bairro').value.trim();
+
+                    if (!origemNome || !destinoNome) {
+                    alert("Preencha origem e destino.");
+                    return;
+                    }
+
+                    var origemId = encontrarNoPorNome(origemNome);
+                    var destinoId = encontrarNoPorNome(destinoNome);
+
+                    if (!origemId) {
+                    alert("Origem não encontrada: " + origemNome);
+                    return;
+                    }
+                    if (!destinoId) {
+                    alert("Destino não encontrado: " + destinoNome);
+                    return;
+                    }
+
+                    var adj = construirAdjacencia();
+                    var caminho = calcularCaminhoMaisCurto(origemId, destinoId, adj);
+
+                    if (!caminho) {
+                    alert("Não há caminho entre " + origemNome + " e " + destinoNome + ".");
+                    return;
+                    }
+
+                    destacarCaminho(caminho);
+                }
+
+                document.getElementById('btn-tracar').addEventListener('click', tratarTracarCaminho);
+
+                // Botão específico Nova Descoberta → Boa Viagem (Setúbal)
+                document.getElementById('btn-percurso-nd-bv').addEventListener('click', function() {
+                    document.getElementById('origem-bairro').value = "Nova Descoberta";
+                    document.getElementById('destino-bairro').value = "Boa Viagem";
+                    tratarTracarCaminho();
+                });
+
+                // popula autocomplete assim que carregar
+                popularDatalistBairros();
+                </script>
+                '''
+
+    html = html.replace("</body>", extra_html + "\n</body>")
+
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(html)
+
     print(html_path)
 
 def gerar_subgrafo_top10_grau_html(
