@@ -6,6 +6,7 @@ import collections
 from collections import deque, defaultdict
 from src.graphs.graph import Graph
 from src.graphs.algorithms import bfs, dfs, dijkstra, bellman_ford
+from src.viz import plot_histograma_graus_voos
 
 def carregar_grafo_voos(filepath):
     grafo = Graph()
@@ -181,6 +182,11 @@ def init_dataset_voos():
     bellman_res = rodar_bellman_ford_graphs(g_bellman, casos_bf, out_dir)
 
     gerar_parte2_report(bfs_dfs, dijkstra_res, bellman_res, out_dir)
+    plot_histograma_graus_voos(
+        dataset_info_path=os.path.join(out_dir, "parte2_dataset_info.json"),
+        out_path=os.path.join(out_dir, "parte2_histograma_graus_voos.png"),
+    )
+    
     print("Pipeline parte 2 executada com sucesso!")
 
 def main():

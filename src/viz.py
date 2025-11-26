@@ -700,6 +700,158 @@ def plot_top10_grau(
     plt.savefig(out_path)
     plt.close()
 
+def plot_histograma_graus_voos(
+    dataset_info_path: str = "out/parte2_dataset_info.json",
+    out_path: str = "out/parte2_histograma_graus_voos.png",
+):
+    """
+    Plota a distribuição de graus do grafo de voos (Parte 2),
+    usando o arquivo JSON gerado em gerar_info_dataset_voos.
+    """
+    if not os.path.exists(dataset_info_path):
+        return
+
+    with open(dataset_info_path, encoding="utf-8") as f:
+        info = json.load(f)
+
+    distrib = info.get("distribuicao_graus", {})
+
+    if not distrib:
+        return
+
+    graus = []
+    freq = []
+    for grau_str, freq_val in sorted(distrib.items(), key=lambda x: int(x[0])):
+        graus.append(int(grau_str))
+        freq.append(freq_val)
+
+    plt.figure(figsize=(8, 5))
+    plt.bar(graus, freq)
+    plt.xlabel("Grau de saída (número de voos por origem)")
+    plt.ylabel("Frequência")
+    plt.title("Distribuição dos graus do grafo de voos (Parte 2)")
+    plt.tight_layout()
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    plt.savefig(out_path)
+    plt.close()
+
+def gerar_index_html(out_dir: str = "out"):
+    """
+    Gera uma pagina index.html em out/ com links para as principais
+    visualizacoes e arquivos gerados (Parte 1 e Parte 2), com um layout
+    mais agradável.
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    index_path = os.path.join(out_dir, "index.html")
+
+    secoes = [
+        (
+            "Parte 1 – Grafo de bairros do Recife",
+            [
+                ("Grafo interativo", "grafo_interativo.html"),
+                ("Árvore de percurso (Nova Descoberta → Boa Viagem)", "arvore_percurso.html"),
+                ("Histograma de graus dos bairros", "histograma_graus.png"),
+                ("Top 10 bairros por grau", "top10_grau.png"),
+                ("Subgrafo Top 10 graus", "subgrafo_top10_grau.html"),
+                ("Métricas globais", "recife_global.json"),
+                ("Microrregiões", "microrregioes.json"),
+                ("Graus por bairro", "graus.csv"),
+                ("Ego-network por bairro", "ego_bairro.csv"),
+                ("Distâncias entre endereços", "distancias_enderecos.csv"),
+            ],
+        ),
+        (
+            "Parte 2 – Dataset maior de voos",
+            [
+                ("Histograma de graus do grafo de voos", "parte2_histograma_graus_voos.png"),
+                ("Descrição do dataset de voos", "parte2_dataset_info.json"),
+                ("Resultados BFS/DFS", "bfs_dfs_resultados.json"),
+                ("Resultados Dijkstra", "dijkstra_resultados.json"),
+                ("Resultados Bellman–Ford", "bellman_ford_resultados.json"),
+                ("Tabela de desempenho", "parte2_report.json"),
+            ],
+        ),
+    ]
+
+    def tipo_arquivo(filename: str) -> str:
+        ext = filename.split(".")[-1].lower()
+        if ext == "html":
+            return "HTML"
+        if ext == "png":
+            return "IMG"
+        if ext == "csv":
+            return "CSV"
+        if ext == "json":
+            return "JSON"
+        return ext.upper()
+
+    html = [
+        "<!DOCTYPE html>",
+        "<html lang='pt-BR'>",
+        "<head>",
+        "  <meta charset='UTF-8'>",
+        "  <title>Index – Projeto Grafos</title>",
+        "  <style>",
+        "    * { box-sizing: border-box; }",
+        "    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f3f4f6; }",
+        "    .topbar { background: linear-gradient(90deg,#1e3a8a,#2563eb); color:#fff; padding: 18px 0; }",
+        "    .topbar h1 { margin: 0; font-size: 24px; text-align: center; }",
+        "    .topbar p { margin: 4px 0 0; font-size: 13px; text-align: center; opacity: 0.9; }",
+        "    .container { max-width: 1100px; margin: 24px auto 32px; padding: 0 16px; }",
+        "    .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 16px; }",
+        "    .card { background: #ffffff; padding: 18px 20px; border-radius: 10px;",
+        "            box-shadow: 0 2px 6px rgba(15,23,42,0.08); border: 1px solid #e5e7eb; }",
+        "    .card h2 { margin: 0 0 10px; font-size: 18px; color: #111827; }",
+        "    .card p { margin: 0 0 10px; font-size: 13px; color: #6b7280; }",
+        "    ul { list-style-type: none; padding-left: 0; margin: 0; }",
+        "    li { margin: 4px 0; display: flex; align-items: center; }",
+        "    a { text-decoration: none; color: #2563eb; font-size: 14px; }",
+        "    a:hover { text-decoration: underline; }",
+        "    .badge { margin-left: 8px; padding: 2px 6px; border-radius: 999px;",
+        "             font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;",
+        "             background-color: #e5e7eb; color: #374151; }",
+        "    .footer { text-align:center; font-size:12px; color:#9ca3af; margin-top:20px; }",
+        "  </style>",
+        "</head>",
+        "<body>",
+        "  <div class='topbar'>",
+        "    <h1>Projeto Grafos – Index</h1>",
+        "    <p>Selecione uma parte do projeto e abra os arquivos gerados (visualizações e resultados).</p>",
+        "  </div>",
+        "  <div class='container'>",
+        "    <div class='grid'>",
+    ]
+
+    for titulo_secao, itens in secoes:
+        html.append("      <div class='card'>")
+        html.append(f"        <h2>{titulo_secao}</h2>")
+        html.append("        <p>Arquivos principais gerados para esta parte do projeto.</p>")
+        html.append("        <ul>")
+        for label, filename in itens:
+            caminho = os.path.join(out_dir, filename)
+            if os.path.exists(caminho):
+                badge = tipo_arquivo(filename)
+                html.append(
+                    f"          <li><a href='{filename}' target='_blank'>{label}</a>"
+                    f"<span class='badge'>{badge}</span></li>"
+                )
+        html.append("        </ul>")
+        html.append("      </div>")
+
+    html.append("    </div>")
+    html.append("    <div class='footer'>")
+    html.append("      Gerado automaticamente pelo script de visualização do projeto.")
+    html.append("    </div>")
+    html.append("  </div>")
+    html.append("</body>")
+    html.append("</html>")
+
+    with open(index_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(html))
+
+    print(index_path)
+
 def init_visualizacao():
 
     gerar_arvore_percurso_html()

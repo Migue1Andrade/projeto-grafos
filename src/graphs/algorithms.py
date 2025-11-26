@@ -68,6 +68,9 @@ def dijkstra(grafo, origem):
             continue
 
         for v, peso in grafo[u]:
+            if peso < 0:
+                raise ValueError("Dijkstra não suporta arestas com peso negativo")
+
             nova_distancia = distancia_atual + peso
             if nova_distancia < distancias[v]:
                 distancias[v] = nova_distancia

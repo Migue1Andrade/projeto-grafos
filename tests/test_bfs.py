@@ -9,5 +9,15 @@ def test_bfs():
         'D': [],
         'E': []
     }
-    result = bfs(graph, 'A')
-    assert result == ['A', 'B', 'C', 'D', 'E']
+
+    ordem, camadas = bfs(graph, 'A')
+
+    assert ordem == ['A', 'B', 'C', 'D', 'E']
+
+    assert camadas == {
+        'A': 0,
+        'B': 1,
+        'C': 1,
+        'D': 2,
+        'E': 2
+    }
