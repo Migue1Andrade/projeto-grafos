@@ -139,7 +139,10 @@ def init_dataset_voos():
     os.makedirs(out_dir, exist_ok=True)
     dataset_path = "data/dataset_parte2/adjacencias_voos.csv"
     gerar_info_dataset_voos(dataset_path, os.path.join(out_dir, "parte2_dataset_info.json"))
-    g = defaultdict(list)
+
+    g_dijkstra = defaultdict(list)
+    g_bellman = defaultdict(list)
+
     with open(dataset_path, encoding="utf-8") as f:
         reader = csv.DictReader(f, skipinitialspace=True)
         for row in reader:
@@ -147,17 +150,36 @@ def init_dataset_voos():
             destino = row["Destino"].strip()
             classe = row["Classe"].strip().lower()
             peso = float(row["Peso"])
+
+            g_dijkstra[origem].append((destino, abs(peso)))
+
             if classe == "economica":
-                peso = -abs(peso)
+                peso_bf = -abs(peso)
             else:
-                peso = abs(peso)
-            g[origem].append((destino, peso))
+                peso_bf = abs(peso)
+            g_bellman[origem].append((destino, peso_bf))
+
     fontes = ["Mumbai", "Delhi", "Chennai"]
-    bfs_dfs = rodar_bfs_dfs_graphs(g, fontes, out_dir)
-    pares = [("Mumbai", "Delhi"), ("Delhi", "Chennai"), ("Chennai", "Kolkata"), ("Kolkata", "Bangalore"), ("Bangalore", "Hyderabad")]
-    dijkstra_res = rodar_dijkstra_graphs(g, pares, out_dir)
-    casos_bf = [("Mumbai", "Delhi"), ("Delhi", "Chennai"), ("Chennai", "Kolkata"), ("Kolkata", "Bangalore"), ("Bangalore", "Hyderabad")]
-    bellman_res = rodar_bellman_ford_graphs(g, casos_bf, out_dir)
+    bfs_dfs = rodar_bfs_dfs_graphs(g_dijkstra, fontes, out_dir)
+
+    pares = [
+        ("Mumbai", "Delhi"),
+        ("Delhi", "Chennai"),
+        ("Chennai", "Kolkata"),
+        ("Kolkata", "Bangalore"),
+        ("Bangalore", "Hyderabad"),
+    ]
+    dijkstra_res = rodar_dijkstra_graphs(g_dijkstra, pares, out_dir)
+
+    casos_bf = [
+        ("Mumbai", "Delhi"),
+        ("Delhi", "Chennai"),
+        ("Chennai", "Kolkata"),
+        ("Kolkata", "Bangalore"),
+        ("Bangalore", "Hyderabad"),
+    ]
+    bellman_res = rodar_bellman_ford_graphs(g_bellman, casos_bf, out_dir)
+
     gerar_parte2_report(bfs_dfs, dijkstra_res, bellman_res, out_dir)
     print("Pipeline parte 2 executada com sucesso!")
 
