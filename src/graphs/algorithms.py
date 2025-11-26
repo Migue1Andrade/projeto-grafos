@@ -1,114 +1,100 @@
 from heapq import heappush, heappop
 
-# Função auxiliar
-
 def _extract_neighbors(raw_neighbors):
-    """
-    Se os vizinhos vierem como:
-       ['B', 'C']
-    retorna ['B', 'C'].
-
-    Se vierem como:
-       [('B', 2.0), ('C', 4.0)]
-    retorna ['B', 'C'].
-    """
     resultado = []
+
     for item in raw_neighbors:
         if isinstance(item, tuple):
-            resultado.append(item[0]) 
+            resultado.append(item[0])
         else:
             resultado.append(item)
+
     return resultado
 
-
-# BFS
-
 def bfs(graph, start_node):
-    visited = set()
-    queue = [start_node]
+    visitados = set()
+    fila = [start_node]
     ordem = []
+    camadas = {start_node: 0}
 
-    while queue:
-        node = queue.pop(0)
-        if node not in visited:
-            visited.add(node)
+    while fila:
+        node = fila.pop(0)
+        if node not in visitados:
+            visitados.add(node)
             ordem.append(node)
 
             vizinhos = _extract_neighbors(graph.get(node, []))
             for viz in vizinhos:
-                if viz not in visited:
-                    queue.append(viz)
+                if viz not in visitados and viz not in fila:
+                    camadas[viz] = camadas[node] + 1
+                    fila.append(viz)
 
-    return ordem
-
-
-# DFS
+    return ordem, camadas
 
 def dfs(graph, start_node):
-    visited = set()
+    visitados = set()
     ordem = []
+    pilha_rec = set()
+    ciclos = []
 
     def explorar(node):
-        visited.add(node)
+        visitados.add(node)
+        pilha_rec.add(node)
         ordem.append(node)
 
         vizinhos = _extract_neighbors(graph.get(node, []))
 
-        # ORDEM NECESSÁRIA PARA PASSAR NO TESTE
-        # Os testes esperam visitar na ordem inversa da ordenação lexicográfica
-        for viz in sorted(vizinhos, reverse=True):
-            if viz not in visited:
+        for viz in vizinhos:
+            if viz not in visitados:
                 explorar(viz)
+            elif viz in pilha_rec:
+                ciclos.append((node, viz))
+
+        pilha_rec.remove(node)
 
     explorar(start_node)
-    return ordem
+    return ordem, ciclos
 
+def dijkstra(grafo, origem):
+    distancias = {no: float("inf") for no in grafo}
+    distancias[origem] = 0
 
-# DIJKSTRA
-
-def dijkstra(graph, source):
-    dist = {node: float("inf") for node in graph}
-    dist[source] = 0
-
-    heap = [(0, source)]
+    heap = [(0, origem)]
 
     while heap:
-        atual_dist, u = heappop(heap)
+        distancia_atual, u = heappop(heap)
 
-        if atual_dist > dist[u]:
+        if distancia_atual > distancias[u]:
             continue
 
-        for v, peso in graph[u]:  
-            nova = atual_dist + peso
-            if nova < dist[v]:
-                dist[v] = nova
-                heappush(heap, (nova, v))
+        for v, peso in grafo[u]:
+            nova_distancia = distancia_atual + peso
+            if nova_distancia < distancias[v]:
+                distancias[v] = nova_distancia
+                heappush(heap, (nova_distancia, v))
 
-    return dist
+    return distancias
 
+def bellman_ford(grafo, origem):
+    distancias = {no: float("inf") for no in grafo}
+    distancias[origem] = 0
+    arestas = []
 
-# BELLMAN-FORD
+    for origem_no in grafo:
+        for destino_no, peso in grafo[origem_no]:
+            arestas.append((origem_no, destino_no, peso))
 
-def bellman_ford(graph, source):
-    dist = {node: float("inf") for node in graph}
-    dist[source] = 0
-
-    edges = []
-    for u in graph:
-        for v, peso in graph[u]:
-            edges.append((u, v, peso))
-
-    for _ in range(len(graph) - 1):
+    for _ in range(len(grafo) - 1):
         mudou = False
-        for u, v, peso in edges:
-            if dist[u] + peso < dist[v]:
-                dist[v] = dist[u] + peso
+        for origem_no, destino_no, peso in arestas:
+            if distancias[origem_no] + peso < distancias[destino_no]:
+                distancias[destino_no] = distancias[origem_no] + peso
                 mudou = True
         if not mudou:
             break
 
-    for u, v, peso in edges:
-        if dist[u] + peso < dist[v]:
+    for origem_no, destino_no, peso in arestas:
+        if distancias[origem_no] + peso < distancias[destino_no]:
             raise ValueError("Ciclo negativo detectado")
 
-    return dist
+    return distancias

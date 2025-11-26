@@ -417,7 +417,6 @@ def gerar_grafo_interativo_html(
                     });
                 }
 
-                // --- BUSCA POR BAIRRO ---
                 function selecionarBairroPorNome(nome) {
                     if (!nome) return;
                     var ids = [];
@@ -453,8 +452,6 @@ def gerar_grafo_interativo_html(
                     selecionarBairroPorNome(inputBusca.value);
                 });
 
-                // --- AUXÍLIOS PARA ORIGEM/DESTINO ---
-
                 function encontrarNoPorNome(nome) {
                     if (!nome) return null;
                     nome = nome.toLowerCase();
@@ -468,7 +465,6 @@ def gerar_grafo_interativo_html(
                     return null;
                 }
 
-                // Monta lista de adjacência (grafo não-direcionado)
                 function construirAdjacencia() {
                     var dataEdges = edges.get();
                     var adj = {};
@@ -481,7 +477,6 @@ def gerar_grafo_interativo_html(
                     return adj;
                 }
 
-                // BFS para caminho mais curto em número de arestas
                 function calcularCaminhoMaisCurto(origemId, destinoId, adj) {
                     var fila = [origemId];
                     var visitado = {};
@@ -524,7 +519,6 @@ def gerar_grafo_interativo_html(
                 function destacarCaminho(caminho) {
                     var dataEdges = edges.get();
 
-                    // limpa o destaque anterior
                     if (ultimasArestasDestacadas.length > 0) {
                     dataEdges.forEach(function(e) {
                         if (ultimasArestasDestacadas.indexOf(e.id) !== -1) {
@@ -536,7 +530,6 @@ def gerar_grafo_interativo_html(
 
                     var novasArestas = [];
 
-                    // destaca as arestas do novo caminho
                     for (var i = 0; i < caminho.length - 1; i++) {
                     var u = caminho[i];
                     var v = caminho[i + 1];
@@ -593,14 +586,12 @@ def gerar_grafo_interativo_html(
 
                 document.getElementById('btn-tracar').addEventListener('click', tratarTracarCaminho);
 
-                // Botão específico Nova Descoberta → Boa Viagem (Setúbal)
                 document.getElementById('btn-percurso-nd-bv').addEventListener('click', function() {
                     document.getElementById('origem-bairro').value = "Nova Descoberta";
                     document.getElementById('destino-bairro').value = "Boa Viagem";
                     tratarTracarCaminho();
                 });
 
-                // popula autocomplete assim que carregar
                 popularDatalistBairros();
                 </script>
                 '''
