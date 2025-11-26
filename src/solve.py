@@ -6,7 +6,6 @@ from math import inf
 
 from src.graphs.io import (
     load_bairros_csv,
-    melt_bairros,
     save_csv,
     load_adjacencias,
 )
@@ -14,104 +13,42 @@ from src.graphs.graph import Graph
 
 from src.graphs.algorithms import dijkstra
 
-# ----------------------------------------------------------------------
-# (Mantido por compatibilidade, mas não usado no fluxo atual)
-# ----------------------------------------------------------------------
-def construir_adjacencias(filepath_bairros: str, filepath_adjacencias: str):
-    headers, rows = load_bairros_csv(filepath_bairros)
-    bairros = melt_bairros(headers, rows)
-    graph = Graph()
-
-    # Versão simples com peso 1.0 só pela estrutura
-    for i, row in enumerate(rows):
-        for j, bairro in enumerate(row):
-            if bairro and bairro.strip():
-                bairro_atual = bairro.strip()
-                vizinhos = []
-
-                # Horizontal
-                if j > 0 and row[j - 1] and row[j - 1].strip():
-                    vizinhos.append(row[j - 1].strip())
-                if j < len(row) - 1 and row[j + 1] and row[j + 1].strip():
-                    vizinhos.append(row[j + 1].strip())
-
-                # Vertical
-                if i > 0 and rows[i - 1][j] and rows[i - 1][j].strip():
-                    vizinhos.append(rows[i - 1][j].strip())
-                if i < len(rows) - 1 and rows[i + 1][j] and rows[i + 1][j].strip():
-                    vizinhos.append(rows[i + 1][j].strip())
-
-                for vizinho in vizinhos:
-                    graph.add_edge(bairro_atual, vizinho, 1.0)
-
-    adjacencias = []
-    for u, v, p in graph.edges():
-        adjacencias.append([u, v, p])
-
-    save_csv(filepath_adjacencias, adjacencias, header=["origem", "destino", "peso"])
-    return graph
-
-
-def construir_enderecos(bairros: list, filepath_enderecos: str):
-    enderecos = [[bairro, f"Rua Principal, 100 - {bairro}"] for bairro in bairros]
-    save_csv(filepath_enderecos, enderecos, header=["bairro", "endereco"])
-    return enderecos
-
-
-# ----------------------------------------------------------------------
-# Grafo principal
-# ----------------------------------------------------------------------
 def construir_grafo(filepath_adjacencias: str) -> Graph:
     adj_list = load_adjacencias(filepath_adjacencias)
-    g = Graph()
+    grafo = Graph()
 
     for origem, destino, logradouro, observacao, peso in adj_list:
-        g.add_edge(origem, destino, peso)
+        grafo.add_edge(origem, destino, peso)
 
-    return g
+    return grafo
 
-
-# ----------------------------------------------------------------------
-# Microrregiões (bairros_unique + métricas de subgrafos)
-# ----------------------------------------------------------------------
-def carregar_microrregioes(filepath_bairros: str = "data/bairros_recife.csv"):
-    """
-    Lê o CSV de bairros em matriz (1.1..6.3) e devolve:
-      - dict bairro -> microrregiao (string: '1', '2', ..., '6')
-    """
-    headers, rows = load_bairros_csv(filepath_bairros)
+def gerar_microrregioes_json(filepath_bairros):
+    cebecas, linhas = load_bairros_csv(filepath_bairros)
     bairro_para_micro = {}
 
-    for col_idx, header in enumerate(headers):
-        # Ex.: '1.1' -> '1'
-        micro = header.split(".")[0].strip()
+    for coluna_idx, cabeca in enumerate(cebecas):
+        micro = cabeca.split(".")[0].strip()
         if not micro:
             continue
 
-        for row in rows:
-            if col_idx >= len(row):
+        for linha in linhas:
+            if coluna_idx >= len(linha):
                 continue
-            cell = row[col_idx]
-            if not cell:
+            celula = linha[coluna_idx]
+            if not celula:
                 continue
-            bairro = cell.strip()
+            bairro = celula.strip()
             if not bairro:
                 continue
 
-            # Se um bairro aparecer duas vezes, a última sobrescreve;
-            # na prática, no dataset isso não deve acontecer.
             bairro_para_micro[bairro] = micro
 
     return bairro_para_micro
 
-
-def gerar_bairros_unique(
+def gerar_bairros_unique_csv(
     bairro_para_micro: dict, filepath: str = "data/bairros_unique.csv"
 ):
-    """
-    Gera o arquivo bairros_unique.csv no formato:
-      bairro, microrregiao
-    """
+
     linhas = [
         [bairro, microrregiao]
         for (bairro, microrregiao) in sorted(
@@ -121,26 +58,15 @@ def gerar_bairros_unique(
     ]
     save_csv(filepath, linhas, header=["bairro", "microrregiao"])
 
-
-def calcular_microrregioes(g: Graph, bairro_para_micro: dict):
-    """
-    Para cada microrregião (1..6), calcula:
-      - ordem (número de bairros do grupo que aparecem no grafo)
-      - tamanho (número de arestas internas ao grupo)
-      - densidade
-    Retorna lista de dicionários:
-      { microrregiao, ordem, tamanho, densidade }
-    """
-    # Agrupa nós por microrregião
+def agrupar_nos_microrregioes(grafo: Graph, bairro_para_micro: dict):
     micros = {}
-    for bairro in g.nodes():
+    for bairro in grafo.nodes():
         microrregiao = bairro_para_micro.get(bairro)
         if not microrregiao:
             continue
         micros.setdefault(microrregiao, set()).add(bairro)
 
-    # Lista única de arestas
-    edges = g.edges()
+    edges = grafo.edges()
     resultados = []
 
     for microrregiao, nodes_set in sorted(micros.items(), key=lambda x: int(x[0])):
@@ -167,121 +93,101 @@ def calcular_microrregioes(g: Graph, bairro_para_micro: dict):
 
     return resultados
 
+def calcular_metricas_globais(grafo: Graph) -> dict:
+    num_nos = len(grafo.nodes())
+    num_arestas = len(grafo.edges())
 
-# ----------------------------------------------------------------------
-# Métricas globais, graus e ego-subrede
-# ----------------------------------------------------------------------
-def calcular_metricas_globais(g: Graph) -> dict:
-    n = len(g.nodes())
-    m = len(g.edges())
-
-    if n <= 1:
+    if num_nos <= 1:
         densidade = 0.0
     else:
-        densidade = (2 * m) / (n * (n - 1))
+        densidade = (2 * num_arestas) / (num_nos * (num_nos - 1))
 
     return {
-        "ordem": n,
-        "tamanho": m,
+        "ordem": num_nos,
+        "tamanho": num_arestas,
         "densidade": densidade,
     }
 
-def dijkstra_caminho(g: Graph, origem: str, destino: str):
-    """
-    Versão de Dijkstra que retorna custo e caminho explícito
-    no grafo de bairros.
-    """
-    dist = {n: inf for n in g.nodes()}
-    prev = {n: None for n in g.nodes()}
-    dist[origem] = 0.0
+def dijkstra_caminho(grafo: Graph, origem: str, destino: str):
+    distancias = {no: inf for no in grafo.nodes()}
+    anteriores = {no: None for no in grafo.nodes()}
+    distancias[origem] = 0.0
 
     heap = [(0.0, origem)]
 
     while heap:
-        custo_atual, u = heapq.heappop(heap)
+        custo_atual, no_atual = heapq.heappop(heap)
 
-        if u == destino:
+        if no_atual == destino:
             break
 
-        if custo_atual > dist[u]:
+        if custo_atual > distancias[no_atual]:
             continue
 
-        for v, peso in g.neighbors(u):
-            novo = custo_atual + peso
-            if novo < dist[v]:
-                dist[v] = novo
-                prev[v] = u
-                heapq.heappush(heap, (novo, v))
+        for vizinho, peso in grafo.neighbors(no_atual):
+            novo_custo = custo_atual + peso
+            if novo_custo < distancias[vizinho]:
+                distancias[vizinho] = novo_custo
+                anteriores[vizinho] = no_atual
+                heapq.heappush(heap, (novo_custo, vizinho))
 
-    # Reconstrói caminho
-    if dist[destino] == inf:
+    if distancias[destino] == inf:
         return inf, []
 
     caminho = []
     atual = destino
     while atual is not None:
         caminho.append(atual)
-        atual = prev[atual]
+        atual = anteriores[atual]
     caminho.reverse()
 
-    return dist[destino], caminho
+    return distancias[destino], caminho
 
-def calcular_graus(g: Graph):
-    graus = [(bairro, g.degree(bairro)) for bairro in g.nodes()]
+def calcular_graus(grafo: Graph):
+    graus = [(bairro, grafo.degree(bairro)) for bairro in grafo.nodes()]
     graus.sort(key=lambda x: (-x[1], x[0]))
+
     return graus
 
-
-def calcular_ego(g: Graph):
+def calcular_ego(grafo: Graph):
     ego_info = []
-    edges = g.edges()
+    todas_arestas = grafo.edges()
 
-    for bairro in g.nodes():
-        vizinhos = [v for (v, _) in g.neighbors(bairro)]
+    for bairro in grafo.nodes():
+        vizinhos = [vizinho for (vizinho, _) in grafo.neighbors(bairro)]
         grau = len(vizinhos)
 
-        ego_nodes = set([bairro] + vizinhos)
-        ordem_ego = len(ego_nodes)
+        nos_ego = set([bairro] + vizinhos)
+        ordem_ego = len(nos_ego)
 
         tamanho_ego = 0
-        for u, v, _ in edges:
-            if u in ego_nodes and v in ego_nodes:
+        for origem, destino, _ in todas_arestas:
+            if origem in nos_ego and destino in nos_ego:
                 tamanho_ego += 1
 
         if ordem_ego <= 1:
-            dens_ego = 0.0
+            densidade_ego = 0.0
         else:
-            dens_ego = (2 * tamanho_ego) / (ordem_ego * (ordem_ego - 1))
+            densidade_ego = (2 * tamanho_ego) / (ordem_ego * (ordem_ego - 1))
 
-        ego_info.append((bairro, grau, ordem_ego, tamanho_ego, dens_ego))
+        ego_info.append((bairro, grau, ordem_ego, tamanho_ego, densidade_ego))
 
     ego_info.sort(key=lambda x: x[0])
+
     return ego_info
 
 def normalizar_bairro_destino(bairro: str) -> str:
-    """
-    Trata casos especiais, como Setúbal -> Boa Viagem.
-    """
     if not bairro:
         return bairro
 
     nome = bairro.strip()
 
-    # Caso específico da proposta: Setúbal é sub-bairro de Boa Viagem
     if "setúbal" in nome.lower():
         return "Boa Viagem"
 
     return nome
 
-
 def calcular_distancias_enderecos(g: Graph, filepath_enderecos: str = "data/enderecos.csv"):
-    """
-    Lê data/enderecos.csv e calcula custo/caminho entre os bairros
-    usando Dijkstra.
-    Retorna:
-      - lista com linhas para distancias_enderecos.csv
-      - dado especial do percurso Nova Descoberta -> Setúbal/Boa Viagem
-    """
     linhas_saida = []
     percurso_nd_setubal = None
 
@@ -294,7 +200,6 @@ def calcular_distancias_enderecos(g: Graph, filepath_enderecos: str = "data/ende
             bairro_Y_original = row["bairro_Y"].strip()
             bairro_Y = normalizar_bairro_destino(bairro_Y_original)
 
-            # Calcula no grafo usando Dijkstra com caminho
             custo, caminho = dijkstra_caminho(g, bairro_X, bairro_Y)
             caminho_str = " -> ".join(caminho) if caminho else ""
 
@@ -307,7 +212,6 @@ def calcular_distancias_enderecos(g: Graph, filepath_enderecos: str = "data/ende
                 caminho_str,
             ])
 
-            # Guarda percurso especial Nova Descoberta -> Setúbal/Boa Viagem
             if bairro_X.lower() == "nova descoberta" and "setúbal" in bairro_Y_original.lower():
                 percurso_nd_setubal = {
                     "origem": bairro_X,
@@ -319,127 +223,59 @@ def calcular_distancias_enderecos(g: Graph, filepath_enderecos: str = "data/ende
 
     return linhas_saida, percurso_nd_setubal
 
-# ----------------------------------------------------------------------
-# Função principal da Parte 1
-# ----------------------------------------------------------------------
-def gerar_arquivos_entrega1(
-    filepath_adjacencias: str = "data/adjacencias_bairros.csv",
-    filepath_bairros: str = "data/bairros_recife.csv",
-    out_dir: str = "out",
-):
-    """
-    Parte 1 – Gera:
-      - data/bairros_unique.csv
-      - out/recife_global.json
-      - out/microrregioes.json
-      - out/graus.csv
-      - out/ego_bairro.csv
-    """
-    # 0) Carrega mapeamento bairro -> microrregiao e gera bairros_unique.csv
-    bairro_para_micro = carregar_microrregioes(filepath_bairros)
-    gerar_bairros_unique(bairro_para_micro, "data/bairros_unique.csv")
+def criar_arquivo_json(caminho, dado):
+    with open(os.path.join("out", caminho), "w", encoding="utf-8") as f:
+        json.dump(dado, f, ensure_ascii=False, indent=2)
 
-    # 1) Constrói grafo principal a partir das adjacências
-    g = construir_grafo(filepath_adjacencias)
+#Func que inicia todos os out para manipulação
+def init():
+    try:
+        bairros_microrregioes = gerar_microrregioes_json("data/bairros_recife.csv")
 
-    # 2) Métricas globais
-    metricas = calcular_metricas_globais(g)
+        gerar_bairros_unique_csv(bairros_microrregioes, "data/bairros_unique.csv")
 
-    # 3) Microrregiões (subgrafos)
-    microrregioes = calcular_microrregioes(g, bairro_para_micro)
+        grafo = construir_grafo("data/adjacencias_bairros.csv")
+        metricas = calcular_metricas_globais(grafo)
+        microrregioes = agrupar_nos_microrregioes(grafo, bairros_microrregioes)
+        graus = calcular_graus(grafo)
+        ego = calcular_ego(grafo)
+        ranking = calcular_ranking(graus, ego)
+        linhas_graus = [[bairro, grau] for (bairro, grau) in graus]
+        linhas_ego = [
+            [bairro, grau, ordem_ego, tamanho_ego, dens_ego]
+            for (bairro, grau, ordem_ego, tamanho_ego, dens_ego) in ego
+        ]
 
-    # 4) Graus
-    graus = calcular_graus(g)
+        # Garante out/
+        os.makedirs("out", exist_ok=True)
 
-    # 5) Ego-subrede
-    ego = calcular_ego(g)
+        criar_arquivo_json("recife_global.json", metricas)
+        criar_arquivo_json("microrregioes.json", microrregioes)
+        save_csv(os.path.join("out", "graus.csv"), linhas_graus, header=["bairro", "grau"])
+        save_csv(
+            os.path.join("out", "ego_bairro.csv"),
+            linhas_ego,
+            header=["bairro", "grau", "ordem_ego", "tamanho_ego", "densidade_ego"],
+        )
+        criar_arquivo_json("ranking_bairros.json", ranking)
+        gerar_distancias_enderecos("data/enderecos.csv", "out", grafo)
+    except Exception as e:
+        print(f"Erro ao inicializar os arquivos de saída: {e}")
 
-    # 6) Ranking dos bairros
-    ranking = calcular_ranking(graus, ego)
+def gerar_distancias_enderecos(filepath_enderecos: str, out_dir: str, grafo: Graph):
+    linhas, percurso_nd_setubal = calcular_distancias_enderecos(grafo, filepath_enderecos)
 
-    # Garante out/
-    os.makedirs(out_dir, exist_ok=True)
-
-    # Salva JSON global
-    with open(os.path.join(out_dir, "recife_global.json"), "w", encoding="utf-8") as f:
-        json.dump(metricas, f, ensure_ascii=False, indent=2)
-
-    # Salva microrregioes.json
-    with open(
-        os.path.join(out_dir, "microrregioes.json"), "w", encoding="utf-8"
-    ) as f:
-        json.dump(microrregioes, f, ensure_ascii=False, indent=2)
-
-    # Salva graus.csv
-    linhas_graus = [[bairro, grau] for (bairro, grau) in graus]
-    save_csv(os.path.join(out_dir, "graus.csv"), linhas_graus, header=["bairro", "grau"])
-
-    # Salva ego_bairro.csv
-    linhas_ego = [
-        [bairro, grau, ordem_ego, tamanho_ego, dens_ego]
-        for (bairro, grau, ordem_ego, tamanho_ego, dens_ego) in ego
-    ]
-    save_csv(
-        os.path.join(out_dir, "ego_bairro.csv"),
-        linhas_ego,
-        header=["bairro", "grau", "ordem_ego", "tamanho_ego", "densidade_ego"],
-    )
-    
-    # Salva ranking_bairros.json
-    with open(os.path.join(out_dir, "ranking_bairros.json"), "w", encoding="utf-8") as f:
-        json.dump(ranking, f, ensure_ascii=False, indent=2)
-    
-    return metricas, microrregioes, graus, ego, ranking
-
-def gerar_distancias_enderecos(
-    filepath_adjacencias: str = "data/adjacencias_bairros.csv",
-    filepath_enderecos: str = "data/enderecos.csv",
-    out_dir: str = "out",
-):
-    """
-    Gera:
-      - out/distancias_enderecos.csv
-      - out/percurso_nova_descoberta_setubal.json
-    """
-    g = construir_grafo(filepath_adjacencias)
-
-    linhas, percurso_nd_setubal = calcular_distancias_enderecos(g, filepath_enderecos)
-
-    os.makedirs(out_dir, exist_ok=True)
-
-    # CSV com todas as distâncias
     save_csv(
         os.path.join(out_dir, "distancias_enderecos.csv"),
         linhas,
         header=["X", "Y", "bairro_X", "bairro_Y", "custo", "caminho"],
     )
 
-    # JSON específico do percurso Nova Descoberta -> Setúbal
     if percurso_nd_setubal is not None:
-        with open(
-            os.path.join(out_dir, "percurso_nova_descoberta_setubal.json"),
-            "w",
-            encoding="utf-8",
-        ) as f:
-            json.dump(percurso_nd_setubal, f, ensure_ascii=False, indent=2)
-
-    return linhas, percurso_nd_setubal
-
+        criar_arquivo_json("percurso_nova_descoberta_setubal.json", percurso_nd_setubal )
 
 def calcular_ranking(graus, ego):
-    """
-    Recebe:
-      - graus: lista de (bairro, grau)
-      - ego:   lista de (bairro, grau, ordem_ego, tamanho_ego, densidade_ego)
-
-    Retorna um dicionário com:
-      - bairro de maior grau
-      - bairro de maior densidade_ego
-    """
-    # Bairro com maior grau
     bairro_grau, valor_grau = max(graus, key=lambda x: x[1])
-
-    # Bairro com maior densidade de ego-subrede
     bairro_ego = max(ego, key=lambda x: x[4])
     bairro_denso = bairro_ego[0]
     grau_denso = bairro_ego[1]
@@ -462,15 +298,3 @@ def calcular_ranking(graus, ego):
     }
 
     return ranking
-
-def carregar_enderecos(filepath: str):
-    pares = []
-    with open(filepath, encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            X = row["X"]
-            Y = row["Y"]
-            bX = row["bairro_X"].strip()
-            bY = row["bairro_Y"].strip()
-            pares.append((X, Y, bX, bY))
-    return pares
