@@ -74,4 +74,7 @@ Este projeto implementa, do zero e sem bibliotecas externas de grafos, algoritmo
 - O projeto é multiplataforma (testado em macOS).
 - Para detalhes sobre pesos, regras e análise dos resultados, consulte o PDF/manual do projeto.
 
----
+## PDF do Relatório
+
+[Relatório Trabalho Teoria dos Grafos (5).pdf](https://github.com/user-attachments/files/23798736/Relatorio.Trabalho.Teoria.dos.Grafos.5.pdf)
+
