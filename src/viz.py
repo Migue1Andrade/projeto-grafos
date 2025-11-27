@@ -701,34 +701,47 @@ def plot_top10_grau(
     plt.close()
 
 def plot_histograma_graus_voos(
-    dataset_info_path: str = "out/parte2_dataset_info.json",
+    dataset_path: str = "data/dataset_parte2/adjacencias_voos.csv",
     out_path: str = "out/parte2_histograma_graus_voos.png",
 ):
-    if not os.path.exists(dataset_info_path):
+    
+    if not os.path.exists(dataset_path):
         return
 
-    with open(dataset_info_path, encoding="utf-8") as f:
-        info = json.load(f)
+    graus_por_cidade = {}
 
-    distrib = info.get("distribuicao_graus", {})
+    with open(dataset_path, encoding="utf-8") as f:
+        reader = csv.DictReader(f, skipinitialspace=True)
+        for row in reader:
+            origem = row["Origem"].strip()
+            graus_por_cidade[origem] = graus_por_cidade.get(origem, 0) + 1
 
-    if not distrib:
+    if not graus_por_cidade:
         return
 
-    graus = []
-    freq = []
-    for grau_str, freq_val in sorted(distrib.items(), key=lambda x: int(x[0])):
-        graus.append(int(grau_str))
-        freq.append(freq_val)
+    cidades = sorted(graus_por_cidade.keys())
+    valores = [graus_por_cidade[c] for c in cidades]
 
-    plt.figure(figsize=(8, 5))
-    plt.bar(graus, freq)
-    plt.xlabel("Grau de saída (número de voos por origem)")
-    plt.ylabel("Frequência")
-    plt.title("Distribuição dos graus do grafo de voos (Parte 2)")
+    cores = [
+        "#1E88E5",
+        "#43A047",
+        "#FB8C00",
+        "#8E24AA",
+        "#F4511E",
+        "#00897B",
+        "#6D4C41",
+        "#3949AB",
+        "#FDD835",
+    ]
+    cores_barras = [cores[i % len(cores)] for i in range(len(cidades))]
+
+    plt.figure(figsize=(10, 5))
+    plt.bar(cidades, valores, color=cores_barras)
+    plt.xlabel("Cidade de origem")
+    plt.ylabel("Grau de saída (nº de voos por origem)")
+    plt.title("Grau de saída por cidade (Parte 2)")
+    plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
-
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
     plt.savefig(out_path)
     plt.close()
 
@@ -756,6 +769,7 @@ def gerar_index_html(out_dir: str = "out"):
             "Parte 2 – Dataset maior de voos",
             [
                 ("Histograma de graus do grafo de voos", "parte2_histograma_graus_voos.png"),
+                ("Grafo de voos com BFS/DFS", "parte2_grafo_voos_bfs_dfs.html"),
                 ("Descrição do dataset de voos", "parte2_dataset_info.json"),
                 ("Resultados BFS/DFS", "bfs_dfs_resultados.json"),
                 ("Resultados Dijkstra", "dijkstra_resultados.json"),
@@ -844,6 +858,171 @@ def gerar_index_html(out_dir: str = "out"):
 
     print(index_path)
 
+def gerar_grafo_voos_bfs_dfs_html(
+    dataset_path: str = "data/dataset_parte2/adjacencias_voos.csv",
+    bfs_dfs_json_path: str = "out/bfs_dfs_resultados.json",
+    html_path: str = "out/parte2_grafo_voos_bfs_dfs.html",
+):
+    """
+    Gera uma visualizacao interativa do grafo de voos (Parte 2),
+    usando informacoes de BFS/DFS:
+      - BFS: camadas (distancia em arestas a partir de uma fonte)
+      - DFS: ciclos detectados (arestas em ciclo)
+    As cidades sao posicionadas em circulo para ficar mais legivel.
+    """
+    if not os.path.exists(dataset_path) or not os.path.exists(bfs_dfs_json_path):
+        return
+
+    # --------------------------
+    # 1) Carrega o grafo de voos
+    # --------------------------
+    nos = set()
+    arestas_contadas = {}  # (origem, destino) -> quantidade de voos
+
+    with open(dataset_path, encoding="utf-8") as f:
+        reader = csv.DictReader(f, skipinitialspace=True)
+        for row in reader:
+            origem = row["Origem"].strip()
+            destino = row["Destino"].strip()
+            nos.add(origem)
+            nos.add(destino)
+            chave = (origem, destino)
+            arestas_contadas[chave] = arestas_contadas.get(chave, 0) + 1
+
+    if not nos:
+        return
+
+    max_voos = max(arestas_contadas.values()) if arestas_contadas else 1
+
+    # -------------------------------
+    # 2) Carrega resultados BFS/DFS
+    # -------------------------------
+    with open(bfs_dfs_json_path, encoding="utf-8") as f:
+        resultados = json.load(f)
+
+    chave_bfs = None
+    chave_dfs = None
+    for k in resultados.keys():
+        if k.startswith("BFS_") and chave_bfs is None:
+            chave_bfs = k
+        if k.startswith("DFS_") and chave_dfs is None:
+            chave_dfs = k
+
+    camadas = {}
+    ciclos = []
+    if chave_bfs:
+        camadas = resultados[chave_bfs].get("camadas", {})
+    if chave_dfs:
+        ciclos = resultados[chave_dfs].get("ciclos", [])
+
+    nos_em_ciclo = set()
+    arestas_em_ciclo = set()
+    for u, v in ciclos:
+        nos_em_ciclo.add(u)
+        nos_em_ciclo.add(v)
+        arestas_em_ciclo.add((u, v))
+        arestas_em_ciclo.add((v, u))
+
+    # --------------------------
+    # 3) Cria o grafo com PyVis
+    # --------------------------
+    net = Network(
+        height="800px",
+        width="100%",
+        bgcolor="#ffffff",
+        font_color="#222222",
+        directed=True,
+    )
+
+    # Vamos posicionar as cidades em circulo,
+    # com coordenadas fixas (x, y) para nao ficar tudo amontoado
+    cidades_ordenadas = sorted(nos)
+    n = len(cidades_ordenadas)
+    raio = 300.0
+
+    import math
+
+    posicoes = {}
+    for i, cidade in enumerate(cidades_ordenadas):
+        ang = 2 * math.pi * i / n
+        x = raio * math.cos(ang)
+        y = raio * math.sin(ang)
+        posicoes[cidade] = (x, y)
+
+    # Cores simples para camadas do BFS
+    # camada 0 (fonte): azul
+    # demais camadas: verde
+    cor_fonte = "#1E88E5"
+    cor_geral = "#43A047"
+
+    for cidade in cidades_ordenadas:
+        camada = camadas.get(cidade)
+        if camada is None:
+            cor = "#B0BEC5"
+            titulo_camada = "Nao alcancado pelo BFS selecionado"
+        else:
+            if camada == 0:
+                cor = cor_fonte
+            else:
+                cor = cor_geral
+            titulo_camada = f"Camada BFS: {camada}"
+
+        em_ciclo = cidade in nos_em_ciclo
+        border_width = 3 if em_ciclo else 1
+
+        x, y = posicoes[cidade]
+
+        title = (
+            f"<b>{cidade}</b><br>"
+            f"{titulo_camada}<br>"
+            f"Em ciclo DFS: {'sim' if em_ciclo else 'nao'}"
+        )
+
+        net.add_node(
+            cidade,
+            label=cidade,
+            color=cor,
+            size=22,
+            borderWidth=border_width,
+            title=title,
+            x=x,
+            y=y,
+            physics=False,  # fixa posicao
+        )
+
+    # Adiciona arestas agregadas
+    for (origem, destino), qtd_voos in arestas_contadas.items():
+        em_ciclo = (origem, destino) in arestas_em_ciclo
+        cor = "#CFD8DC"
+        largura_base = 1.0
+        largura = largura_base + 5.0 * (qtd_voos / max_voos)
+
+        if em_ciclo:
+            cor = "#E53935"  # rota em ciclo
+
+        title = f"{origem} → {destino}<br>{qtd_voos} voos na base"
+
+        net.add_edge(
+            origem,
+            destino,
+            color=cor,
+            width=largura,
+            title=title,
+        )
+
+    net.set_options(CONFIG_GRAFO_INTERATIVO)
+
+    os.makedirs(os.path.dirname(html_path), exist_ok=True)
+    net.write_html(html_path)
+    print(html_path)
+
+
+def gerar_visualizacao_parte2():
+    """
+    Gera visualizacoes especificas da Parte 2.
+    """
+    gerar_grafo_voos_bfs_dfs_html()
+
 def init_visualizacao():
 
     gerar_arvore_percurso_html()
@@ -851,3 +1030,4 @@ def init_visualizacao():
     plot_histograma_graus()
     plot_top10_grau()
     gerar_subgrafo_top10_grau_html()
+    plot_histograma_graus_voos()

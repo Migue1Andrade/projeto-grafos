@@ -3,7 +3,7 @@ Recife, Santo Antônio, Ponte Buarque de Macedo, “Acesso por ponte”, 1.0
 Recife, São José, Ponte 12 de Setembro, “Acesso por ponte”, 1.0
 Santo Amaro, Boa Vista, Rua 13 de Maio, “Acesso por Rua”, 2.0
 Santo Amaro, Santo Antônio, Rua Princesa Isabel, “Acesso por Rua”, 2.0
-Santo Amaro, Soledade, Rua  Gervásio Pires, "Acesso por rua”, 2.0
+Santo Amaro, Soledade, Rua  Gervásio Pires, "Acesso por rua", 2.0
 Santo Amaro, Campo Grande, Rua Odorico Mendes, "Acesso por rua", 2.0
 Santo Amaro, Torreão, Rua Retorno Um, "Acesso por ponte", 1.0
 Boa Vista, Ilha do Leite, Avenida Lins Petit, "Acesso por Avenida", 4.0
@@ -16,7 +16,7 @@ Boa Vista, Encruzilhada, Avenida João de Barros, "Acesso Avenida", 4.0
 Boa Vista, Espinheiro, Rua 48, "Acesso por Rua", 2.0
 Boa Vista, Derby, Rua Henrique Dias, "Acesso por Rua", 2.0
 Boa Vista, Graças, Rua Joaquim Nabuco, "Acesso por Rua", 2.0
-Cabanga, Afogados, Avenida Sul Governador Cid Sampaio, "Acesso por Avenida', 4.0
+Cabanga, Afogados, Avenida Sul Governador Cid Sampaio, "Acesso por Avenida", 4.0
 Cabanga, São José, Avenida Engenheiro José Estelita, "Acesso por Avenida", 4.0
 Cabanga, Ilha Joana Bezerra, Rua Dom Paulo II, "Acesso por rua", 2.0
 Cabanga, Pina, Ponte Governador Paulo Guerra, "Acesso por ponte", 1.0
@@ -59,7 +59,7 @@ Torreão, Espinheiro, Avenida Norte Miguel Arraes de Alencar, “Acesso por aven
 Água Fria, Bomba do Hemetério, Rua Córrego João Francisco, “Acesso por rua”, 2.0
 Água Fria, Fundão, Rua Major Davino, “Acesso por rua”, 2.0
 Água Fria, Linha do Tiro, Rua Ladeira de Pedra, “Acesso por rua”, 2.0
-Água Fria, Alto Santa Teresinha, Rua Grupiara, “Acesso por rua”, 2.0
+Água Fria, Alto Santa Teresinha, Rua Grupiara, “Acesso por rua", 2.0
 Água Fria, Porto da Madeira, Rua Conselheiro Barros Barreto, “Acesso por rua”, 2.0
 Alto Santa Teresinha, Bomba do Hemetério, Rua Aurea, “Acesso por rua”, 2.0
 Alto Santa Teresinha, Alto José do Pinho, Rua Padre Oliveira, “Acesso por rua”, 2.0
@@ -84,7 +84,7 @@ Alto do Mandu, Vasco da Gama, Rua S D 5178, “Acesso por rua”, 2.0
 Apipucos, Dois Irmãos, Avenida da Recuperação, “Acesso por Avenida”, 4.0
 Apipucos, Macaxeira, Rua Erundina N. de Araujo, “Acesso por rua”, 2.0
 Apipucos, Monteiro, Rua de Apipucos, “Acesso por rua”, 2.0
-Apipucos, Caxangá, Rodovia, Governador Mário Covas, “Acesso por rodovia”, 5.0
+Apipucos, Caxangá, Rodovia Governador Mário Covas, “Acesso por rodovia”, 5.0
 Apipucos, Córrego do Jenipapo, Rua Araripe Júnior, “Acesso por rua”, 2.0
 Casa Amarela, Casa Forte, Estrada do Encanamento, “Acesso por estrada”, 1.5
 Casa Amarela, Parnamirim, Rua Estrela, “Acesso por rua”, 2.0
@@ -112,7 +112,7 @@ Jaqueira, Santana, Rua Leonardo Bezerra Cavalcante, “Acesso por rua”, 2.0
 Jaqueira, Tamarineira, Rua Simão Mendes, “Acesso por rua”, 2.0
 Monteiro, Poço da Panela, Rua Tapacurá, “Acesso por rua”, 2.0
 Monteiro, Iputinga, Ponte Engenheiro Jaime Gusmão, “Acesso por ponte”, 2.0
-Parnamirim, Santana, Rua Doutor João Santos Filho, “Acesso por rua”,2.0
+Parnamirim, Santana, Rua Doutor João Santos Filho, “Acesso por rua”, 2.0
 Parnamirim, Torre, Rua José Bonifácio, “Acesso por ponte”, 1.0
 Parnamirim, Tamarineira, Rua Sebastião Alves, “Acesso por rua”, 2.0
 Poço da Panela, Casa Amarela, Rua Professor Álvaro Lima, “Acesso por rua”, 2.0
@@ -142,7 +142,7 @@ Córrego do Jenipapo, Nova Descoberta, Rua Alto da Brasileira, “Acesso por Rua
 Córrego do Jenipapo, Macaxeira, Rua Anita, “Acesso por Rua”, 2.0
 Córrego do Jenipapo, Brejo da Guabiraba, Rua Mamori, “Acesso por Rua”, 2.0
 Córrego do Jenipapo, Guabiraba, Rua Córrego da Loira, “Acesso por Rua”, 2.0
-Guabiraba, Pau-Ferro, Estrada do Orfanato, “Acesso por Estrada” 1.5
+Guabiraba, Pau-Ferro, Estrada do Orfanato, “Acesso por Estrada”, 1.5
 Guabiraba, Passarinho, Estrada do Passarinho, “Acesso por Estrada”, 1.5
 Macaxeira, Nova Descoberta, Rua São João Eudes, “Acesso por Rua”, 2.0
 Macaxeira, Apipucos, Rua Dolores Salgado, “Acesso por Rua”, 2.0
@@ -150,7 +150,7 @@ Cordeiro, Iputinga, Rua Nossa Senhora da Saúde, “Acesso por Rua”, 2.0
 Cordeiro, Zumbi, Rua Gregório Júnior, “Acesso por Rua”, 2.0
 Cordeiro, Prado, Rua Gomes Taborda, “Acesso por Rua”, 2.0
 Cordeiro, San Martin, Avenida General San Martin, “Acesso por Avenida”, 4.0
-Cordeiro, Santana, Ponte Parque Santana - Emocy Krause, “Acesso por Ponte” 1.0
+Cordeiro, Santana, Ponte Parque Santana - Emocy Krause, “Acesso por Ponte”, 1.0
 Cordeiro, Engenho do Meio, Rua Bom Pastor, “Acesso por Rua”, 2.0
 Cordeiro, Torrões, Rua Antônio Valdevino Costa, “Acesso por Rua”, 2.0
 Cordeiro, Torre, Rua Souza Bandeira, “Acesso por Rua”, 2.0
@@ -180,7 +180,7 @@ Torrões, San Martin, Rua Cel. Mizael de Mendonça, “Acesso por rua”, 2.0
 Torrões, Cordeiro, Rua Cláudio Brotherhood, “Acesso por rua”, 2.0
 Torrões, Curado, Rua Zumbi dos Palmares, “Acesso por rua”, 2.0
 Caxangá, Várzea, Avenida Joaquim Ribeiro, “Acesso por Avenida”, 4.0
-Caxangá, Sítio dos Pintos, Rua Ribeiro Pessoa “Acesso por rua”, 2.0
+Caxangá, Sítio dos Pintos, Rua Ribeiro Pessoa, “Acesso por rua”, 2.0
 Cidade Universitária, Várzea, Avenida Professor Artur de Sá, “Acesso por Avenida”, 4.0
 Cidade Universitária, Curado, Rua Acdo. Hélio Ramos, “Acesso Por Rua”, 2.0
 Afogados, Bongi, Estrada do Bongi, “Acesso por Estrada”, 1.5
@@ -226,7 +226,7 @@ Boa Viagem, Pina, Rua Amazonas, “Acesso por rua”, 2.0
 Boa Viagem, Imbiribeira, Rua Antônio Falcão, “Acesso por rua”, 2.0
 Boa Viagem, Jordão, Rua Remigio, “Acesso por rua”, 2.0
 Brasilia Teimosa, Pina, Rua Francisco Valpassos, “Acesso por rua”, 2.0
-Imbiribeira, Pina, Viaduto Dom João VI, “Acesso por viaduto, 3.0
+Imbiribeira, Pina, Viaduto Dom João VI, "Acesso por viaduto", 3.0
 Imbiribeira, Ipsep, Rua Pampulha, “Acesso por rua”, 2.0
 Ipsep, Ibura, Rua São Nicolau, “Acesso por rua”, 2.0
 Ibura, Jordão, Rua Camocim, “Acesso por rua”, 2.0

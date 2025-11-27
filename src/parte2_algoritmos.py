@@ -191,7 +191,7 @@ def init_dataset_voos():
 
     gerar_parte2_report(bfs_res, dfs_res, dijkstra_res, bellman_res, out_dir)
     plot_histograma_graus_voos(
-        dataset_info_path=os.path.join(out_dir, "parte2_dataset_info.json"),
+        dataset_path=dataset_path,
         out_path=os.path.join(out_dir, "parte2_histograma_graus_voos.png"),
     )
 
