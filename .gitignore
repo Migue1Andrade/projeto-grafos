@@ -16,6 +16,7 @@ graus.csv
 
 *.html
 *.png
+*.json
 
 microrregioes.json
 percurso_nova_descoberta_setubal.json

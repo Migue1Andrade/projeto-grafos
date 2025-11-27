@@ -704,10 +704,6 @@ def plot_histograma_graus_voos(
     dataset_info_path: str = "out/parte2_dataset_info.json",
     out_path: str = "out/parte2_histograma_graus_voos.png",
 ):
-    """
-    Plota a distribuição de graus do grafo de voos (Parte 2),
-    usando o arquivo JSON gerado em gerar_info_dataset_voos.
-    """
     if not os.path.exists(dataset_info_path):
         return
 
@@ -737,11 +733,6 @@ def plot_histograma_graus_voos(
     plt.close()
 
 def gerar_index_html(out_dir: str = "out"):
-    """
-    Gera uma pagina index.html em out/ com links para as principais
-    visualizacoes e arquivos gerados (Parte 1 e Parte 2), com um layout
-    mais agradável.
-    """
     os.makedirs(out_dir, exist_ok=True)
     index_path = os.path.join(out_dir, "index.html")
 
@@ -776,6 +767,7 @@ def gerar_index_html(out_dir: str = "out"):
 
     def tipo_arquivo(filename: str) -> str:
         ext = filename.split(".")[-1].lower()
+
         if ext == "html":
             return "HTML"
         if ext == "png":

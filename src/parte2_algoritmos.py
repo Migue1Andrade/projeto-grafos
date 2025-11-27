@@ -62,28 +62,33 @@ def gerar_info_dataset_voos(filepath_csv, out_path):
 
     print(f"Info do dataset salva em {out_path}")
 
-def rodar_bfs_dfs_graphs(g, fontes, out_dir):
+def rodar_bfs_graphs(grafo, fontes, out_dir):
     resultados = {}
     for fonte in fontes:
-        # BFS
         t0 = time.time()
-        ordem_bfs, camadas_bfs = bfs(g, fonte)
+        ordem_bfs, camadas_bfs = bfs(grafo, fonte)
         t1 = time.time()
         resultados[f"BFS_{fonte}"] = {
             "ordem": ordem_bfs,
             "camadas": camadas_bfs,
             "tempo": t1-t0
         }
-        # DFS
+    with open(os.path.join(out_dir, "bfs_resultados.json"), "w", encoding="utf-8") as f:
+        json.dump(resultados, f, ensure_ascii=False, indent=2)
+    return resultados
+
+def rodar_dfs_graphs(grafo, fontes, out_dir):
+    resultados = {}
+    for fonte in fontes:
         t0 = time.time()
-        ordem_dfs, ciclos_dfs = dfs(g, fonte)
+        ordem_dfs, ciclos_dfs = dfs(grafo, fonte)
         t1 = time.time()
         resultados[f"DFS_{fonte}"] = {
             "ordem": ordem_dfs,
             "ciclos": ciclos_dfs,
             "tempo": t1-t0
         }
-    with open(os.path.join(out_dir, "bfs_dfs_resultados.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(out_dir, "dfs_resultados.json"), "w", encoding="utf-8") as f:
         json.dump(resultados, f, ensure_ascii=False, indent=2)
     return resultados
 
@@ -102,13 +107,14 @@ def rodar_dijkstra_graphs(g, pares, out_dir):
         json.dump(resultados, f, ensure_ascii=False, indent=2)
     return resultados
 
-def rodar_bellman_ford_graphs(g, casos, out_dir):
+def rodar_bellman_ford_graphs(grafo, casos, out_dir):
     resultados = {}
+
     for origem, destino in casos:
         t0 = time.time()
         ciclo_negativo = False
         try:
-            distancias = bellman_ford(g, origem)
+            distancias = bellman_ford(grafo, origem)
             custo = distancias.get(destino, float('inf'))
         except Exception as e:
             custo = None
@@ -123,14 +129,17 @@ def rodar_bellman_ford_graphs(g, casos, out_dir):
         json.dump(resultados, f, ensure_ascii=False, indent=2)
     return resultados
 
-def gerar_parte2_report(bfs_dfs, dijkstra_res, bellman_res, out_dir):
+def gerar_parte2_report(bfs_res, dfs_res, dijkstra_res, bellman_res, out_dir):
     tabela = []
-    for k, v in bfs_dfs.items():
-        tabela.append({"algoritmo": k, "tempo": v["tempo"], "info": v})
-    for k, v in dijkstra_res.items():
-        tabela.append({"algoritmo": k, "tempo": v["tempo"], "info": v})
-    for k, v in bellman_res.items():
-        tabela.append({"algoritmo": k, "tempo": v["tempo"], "info": v})
+
+    for algoritmo_nome, resultado in bfs_res.items():
+        tabela.append({"algoritmo": algoritmo_nome, "tempo": resultado["tempo"], "info": resultado})
+    for algoritmo_nome, resultado in dfs_res.items():
+        tabela.append({"algoritmo": algoritmo_nome, "tempo": resultado["tempo"], "info": resultado})
+    for algoritmo_nome, resultado in dijkstra_res.items():
+        tabela.append({"algoritmo": algoritmo_nome, "tempo": resultado["tempo"], "info": resultado})
+    for algoritmo_nome, resultado in bellman_res.items():
+        tabela.append({"algoritmo": algoritmo_nome, "tempo": resultado["tempo"], "info": resultado})
 
     with open(os.path.join(out_dir, "parte2_report.json"), "w", encoding="utf-8") as f:
         json.dump(tabela, f, ensure_ascii=False, indent=2)
@@ -161,7 +170,8 @@ def init_dataset_voos():
             g_bellman[origem].append((destino, peso_bf))
 
     fontes = ["Mumbai", "Delhi", "Chennai"]
-    bfs_dfs = rodar_bfs_dfs_graphs(g_dijkstra, fontes, out_dir)
+    bfs_res = rodar_bfs_graphs(g_dijkstra, fontes, out_dir)
+    dfs_res = rodar_dfs_graphs(g_dijkstra, fontes, out_dir)
 
     pares = [
         ("Mumbai", "Delhi"),
@@ -181,12 +191,12 @@ def init_dataset_voos():
     ]
     bellman_res = rodar_bellman_ford_graphs(g_bellman, casos_bf, out_dir)
 
-    gerar_parte2_report(bfs_dfs, dijkstra_res, bellman_res, out_dir)
+    gerar_parte2_report(bfs_res, dfs_res, dijkstra_res, bellman_res, out_dir)
     plot_histograma_graus_voos(
         dataset_info_path=os.path.join(out_dir, "parte2_dataset_info.json"),
         out_path=os.path.join(out_dir, "parte2_histograma_graus_voos.png"),
     )
-    
+
     print("Pipeline parte 2 executada com sucesso!")
 
 def main():

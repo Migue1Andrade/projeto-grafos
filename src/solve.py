@@ -69,24 +69,24 @@ def agrupar_nos_microrregioes(grafo: Graph, bairro_para_micro: dict):
     edges = grafo.edges()
     resultados = []
 
-    for microrregiao, nodes_set in sorted(micros.items(), key=lambda x: int(x[0])):
-        n = len(nodes_set)
-        m = 0
+    for microrregiao, bairros_set in sorted(micros.items(), key=lambda x: int(x[0])):
+        ordem = len(bairros_set)
+        tamanho = 0
 
-        for u, v, _ in edges:
-            if u in nodes_set and v in nodes_set:
-                m += 1
+        for origem, destino, _ in edges:
+            if origem in bairros_set and destino in bairros_set:
+                tamanho += 1
 
-        if n <= 1:
+        if ordem <= 1:
             densidade = 0.0
         else:
-            densidade = (2 * m) / (n * (n - 1))
+            densidade = (2 * tamanho) / (ordem * (ordem - 1))
 
         resultados.append(
             {
                 "microrregiao": microrregiao,
-                "ordem": n,
-                "tamanho": m,
+                "ordem": ordem,
+                "tamanho": tamanho,
                 "densidade": densidade,
             }
         )

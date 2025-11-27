@@ -42,3 +42,16 @@ def test_bellman_ford_ciclo_negativo():
 
     with pytest.raises(ValueError):
         bellman_ford(graph_neg, 'A')
+
+def test_bellman_ford_sem_caminho():
+    graph = {
+        'A': [('B', 2)],
+        'B': [],
+        'C': [('D', 1)],
+        'D': []
+    }
+
+    result = bellman_ford(graph, 'A')
+
+    assert result['C'] == float('inf')
+    assert result['D'] == float('inf')

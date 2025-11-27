@@ -1,7 +1,7 @@
 import argparse
 from src.solve import init
 from src.viz import init_visualizacao, gerar_index_html
-from src.parte2_algoritmos import main as parte2_main  
+from src.parte2_algoritmos import main as parte2_main
 
 def main():
     parser = argparse.ArgumentParser(description="Processa grafos de bairros do Recife")
@@ -9,10 +9,10 @@ def main():
     args = parser.parse_args()
 
     if args.construir:
-        init()                 
-        init_visualizacao()    
+        init()
+        init_visualizacao()
         parte2_main()
-        gerar_index_html()          
+        gerar_index_html()
         print("O projeto foi inicializado com Sucesso")
     else:
         print("Use --construir para gerar os arquivos de adjacências e endereços.")

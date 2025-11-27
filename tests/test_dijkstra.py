@@ -16,6 +16,16 @@ def test_dijkstra_rejeita_pesos_negativos():
         'A': [('B', -1)],
         'B': []
     }
-
     with pytest.raises(ValueError):
         dijkstra(graph, 'A')
+
+def test_dijkstra_sem_caminho():
+    graph = {
+        'A': [('B', 2)],
+        'B': [],
+        'C': [('D', 1)],
+        'D': []
+    }
+    result = dijkstra(graph, 'A')
+    assert result['C'] == float('inf')
+    assert result['D'] == float('inf')
