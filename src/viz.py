@@ -286,10 +286,10 @@ def gerar_grafo_interativo_html(
             color = "#FDD835"
 
         title = (
-            f"<b>{bairro}</b><br>"
-            f"Microrregião: {microrregiao}<br>"
-            f"Grau: {grau:.0f}<br>"
-            f"Densidade ego: {dens_ego:.3f}"
+            f"bairro: {bairro}"
+            f"Microrregião: {microrregiao}"
+            f"Grau: {grau:.0f}"
+            f"Ego: {dens_ego:.3f}"
         )
 
         net.add_node(
