@@ -227,7 +227,6 @@ def criar_arquivo_json(caminho, dado):
     with open(os.path.join("out", caminho), "w", encoding="utf-8") as f:
         json.dump(dado, f, ensure_ascii=False, indent=2)
 
-#Func que inicia todos os out para manipulação
 def init():
     try:
         bairros_microrregioes = gerar_microrregioes_json("data/bairros_recife.csv")
