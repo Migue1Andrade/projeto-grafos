@@ -704,7 +704,7 @@ def plot_histograma_graus_voos(
     dataset_path: str = "data/dataset_parte2/adjacencias_voos.csv",
     out_path: str = "out/parte2_histograma_graus_voos.png",
 ):
-    
+
     if not os.path.exists(dataset_path):
         return
 
@@ -863,21 +863,11 @@ def gerar_grafo_voos_bfs_dfs_html(
     bfs_dfs_json_path: str = "out/bfs_dfs_resultados.json",
     html_path: str = "out/parte2_grafo_voos_bfs_dfs.html",
 ):
-    """
-    Gera uma visualizacao interativa do grafo de voos (Parte 2),
-    usando informacoes de BFS/DFS:
-      - BFS: camadas (distancia em arestas a partir de uma fonte)
-      - DFS: ciclos detectados (arestas em ciclo)
-    As cidades sao posicionadas em circulo para ficar mais legivel.
-    """
     if not os.path.exists(dataset_path) or not os.path.exists(bfs_dfs_json_path):
         return
 
-    # --------------------------
-    # 1) Carrega o grafo de voos
-    # --------------------------
     nos = set()
-    arestas_contadas = {}  # (origem, destino) -> quantidade de voos
+    arestas_contadas = {}
 
     with open(dataset_path, encoding="utf-8") as f:
         reader = csv.DictReader(f, skipinitialspace=True)
@@ -894,9 +884,6 @@ def gerar_grafo_voos_bfs_dfs_html(
 
     max_voos = max(arestas_contadas.values()) if arestas_contadas else 1
 
-    # -------------------------------
-    # 2) Carrega resultados BFS/DFS
-    # -------------------------------
     with open(bfs_dfs_json_path, encoding="utf-8") as f:
         resultados = json.load(f)
 
@@ -923,9 +910,6 @@ def gerar_grafo_voos_bfs_dfs_html(
         arestas_em_ciclo.add((u, v))
         arestas_em_ciclo.add((v, u))
 
-    # --------------------------
-    # 3) Cria o grafo com PyVis
-    # --------------------------
     net = Network(
         height="800px",
         width="100%",
@@ -934,8 +918,6 @@ def gerar_grafo_voos_bfs_dfs_html(
         directed=True,
     )
 
-    # Vamos posicionar as cidades em circulo,
-    # com coordenadas fixas (x, y) para nao ficar tudo amontoado
     cidades_ordenadas = sorted(nos)
     n = len(cidades_ordenadas)
     raio = 300.0
@@ -949,9 +931,6 @@ def gerar_grafo_voos_bfs_dfs_html(
         y = raio * math.sin(ang)
         posicoes[cidade] = (x, y)
 
-    # Cores simples para camadas do BFS
-    # camada 0 (fonte): azul
-    # demais camadas: verde
     cor_fonte = "#1E88E5"
     cor_geral = "#43A047"
 
@@ -987,10 +966,9 @@ def gerar_grafo_voos_bfs_dfs_html(
             title=title,
             x=x,
             y=y,
-            physics=False,  # fixa posicao
+            physics=False,
         )
 
-    # Adiciona arestas agregadas
     for (origem, destino), qtd_voos in arestas_contadas.items():
         em_ciclo = (origem, destino) in arestas_em_ciclo
         cor = "#CFD8DC"
@@ -998,7 +976,7 @@ def gerar_grafo_voos_bfs_dfs_html(
         largura = largura_base + 5.0 * (qtd_voos / max_voos)
 
         if em_ciclo:
-            cor = "#E53935"  # rota em ciclo
+            cor = "#E53935"
 
         title = f"{origem} → {destino}<br>{qtd_voos} voos na base"
 
@@ -1018,9 +996,6 @@ def gerar_grafo_voos_bfs_dfs_html(
 
 
 def gerar_visualizacao_parte2():
-    """
-    Gera visualizacoes especificas da Parte 2.
-    """
     gerar_grafo_voos_bfs_dfs_html()
 
 def init_visualizacao():
