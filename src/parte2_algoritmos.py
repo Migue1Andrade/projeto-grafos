@@ -175,8 +175,7 @@ def init_dataset_voos():
 
     pares = [
         ("Mumbai", "Delhi"),
-        ("Delhi", "Chennai"),
-        ("Chennai", "Kolkata"),
+        ("Delhi", "Kolkata"),
         ("Kolkata", "Bangalore"),
         ("Bangalore", "Hyderabad"),
     ]
@@ -184,8 +183,7 @@ def init_dataset_voos():
 
     casos_bf = [
         ("Mumbai", "Delhi"),
-        ("Delhi", "Chennai"),
-        ("Chennai", "Kolkata"),
+        ("Delhi", "Kolkata"),
         ("Kolkata", "Bangalore"),
         ("Bangalore", "Hyderabad"),
     ]
